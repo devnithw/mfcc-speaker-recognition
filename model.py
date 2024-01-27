@@ -1,15 +1,6 @@
 import torch
 from torch import nn
-from feature_extraction import NUM_MFCC 
 
-# Hyper parameters
-LSTM_HIDDEN_SIZE = 64
-LSTM_NUM_LAYERS = 3
-BI_LSTM = True
-FRAME_AGGREGATION_MEAN = True
-
-# Set torch device
-DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 # Base model
 class LSTMSpeakerEncoder(nn.Module):
