@@ -13,29 +13,18 @@ DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 # Base model
 class LSTMSpeakerEncoder(nn.Module):
-    def __init__(self):
+    def __init__(self, input_size, hidden_size, num_layers, embedding_size):
+
         super(LSTMSpeakerEncoder, self).__init__()
         self.lstm = nn.LSTM(
-            input_size=NUM_MFCC,     # Number of MFCC coefficients (40)
-            hidden_size=LSTM_HIDDEN_SIZE,     # Number of hidden units in each LSTM layer (64)
-            num_layers=LSTM_NUM_LAYERS,     # Number of stacked LSTM layers (3)
+            input_size,     # Number of MFCC coefficients
+            hidden_size,     # Number of hidden units in each LSTM layer
+            num_layers,     # Number of stacked LSTM layers
             batch_first=True,
-            bidirectional= BI_LSTM     # Whether to use a bidirectional LSTM (True/False)
         )
-
-    def _aggregate_frames(self, batch_output):
-      """
-      Aggregate the output frames of the LSTM layer into a fixed-length representation
-      This is the embedding vector representing the audio file
-      """
-      if FRAME_AGGREGATION_MEAN:
-          return torch.mean(batch_output, dim=1, keepdim=False)
-      else:
-          return batch_output[:, -1, :]
+        self.fc = nn.Linear(hidden_size, embedding_size) # Change the output of the LSTM to any preffered embedding size
 
     def forward(self, x):
-        D = 2 if BI_LSTM else 1
-        h0 = torch.zeros(D * LSTM_NUM_LAYERS, x.shape[0], LSTM_HIDDEN_SIZE).to(DEVICE)
-        c0 = torch.zeros(D * LSTM_NUM_LAYERS, x.shape[0], LSTM_HIDDEN_SIZE).to(DEVICE)
-        y, (hn, cn) = self.lstm(x, (h0, c0))
-        return self._aggregate_frames(y)
+        _, (h_n, _) = self.lstm(x)
+        embedding = self.fc(h_n[-1]) # Last layer as embedding
+        return embedding
