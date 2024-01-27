@@ -1,7 +1,6 @@
 import torch
 from torch import nn
 
-
 # Base model
 class LSTMSpeakerEncoder(nn.Module):
     def __init__(self, input_size, hidden_size, num_layers, embedding_size):
