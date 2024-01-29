@@ -49,7 +49,7 @@ def main():
     # Train the model
     for epoch in range(args.epochs):  # Adjust the number of epochs as needed
         print(f"\nEpoch {epoch + 1}/{args.epochs}")
-        train_model(model, train_loader, optimizer, criterion)
+        train_model(model, train_loader, optimizer, loss, device)
 
     print("Training complete!")
 
