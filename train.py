@@ -110,7 +110,7 @@ def main():
     print("Training complete!")
 
     # Save the model
-    torch.save(model.state_dict(), 'my_lstm_model.pth')
+    torch.save(model.state_dict(), 'model.pt')
 
 if __name__ == '__main__':
     main()
