@@ -19,4 +19,4 @@ class TripletCosineLoss(nn.Module):
         # Calculate triplet loss using the margin
         loss = F.relu(neg_cosine - pos_cosine + self.alpha)
 
-        return loss
+        return loss.mean()
